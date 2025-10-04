@@ -1,0 +1,114 @@
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Image Analyzer</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+  <h1>Image  → AI → Voice</h1>
+
+  <input type="file" id="imageInput" accept="image/*">
+  <button id="processBtn">Process Image</button>
+
+  <h3>Extracted Text (OCR):</h3>
+  <pre id="ocrOutput"></pre>
+
+  <h3>AI Analysis:</h3>
+  <pre id="aiOutput"></pre>
+
+  <audio id="ttsPlayer" controls></audio>
+
+  <script type="module">
+    import { runOCR } from './public/ocr.js';
+    // import { analyzeWithAI } from './public/ai.js';
+    // import { speakText } from './public/tts.js';
+
+    const processBtn = document.getElementById("processBtn");
+
+    processBtn.addEventListener("click", async () => {
+      const file = document.getElementById("imageInput").files[0];
+      if (!file) return alert("Please upload an image first.");
+
+      // Step 1: OCR
+      const text = await runOCR(file);
+      document.getElementById("ocrOutput").innerText = text;
+
+      // // Step 2: AI analysis
+      // const analysis = await analyzeWithAI(text);
+      // document.getElementById("aiOutput").innerText = analysis;
+
+      // // Step 3: TTS
+      // await speakText(analysis);
+    });
+  </script>
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Image Analyzer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 2em;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 1em;
+      border-radius: 6px;
+      text-align: left;
+      width: 80%;
+      margin: 1em auto;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image → AI → Voice</h1>
+
+  <input type="file" id="imageInput" accept="image/*">
+  <button id="processBtn">Process Image</button>
+
+  <h3>Extracted Text (OCR):</h3>
+  <pre id="ocrOutput"></pre>
+
+  <script>
+    const processBtn = document.getElementById("processBtn");
+    const output = document.getElementById("ocrOutput");
+
+    processBtn.addEventListener("click", async () => {
+      const file = document.getElementById("imageInput").files[0];
+      if (!file) return alert("Please upload an image first.");
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      output.textContent = "Processing image...";
+
+      try {
+        const response = await fetch("/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.text) {
+          output.textContent = result.text;
+        } else {
+          output.textContent = "Error: OCR failed.";
+        }
+      } catch (err) {
+        console.error(err);
+        output.textContent = "Error: Unable to process image.";
+      }
+    });
+  </script>
+</body>
+</html>

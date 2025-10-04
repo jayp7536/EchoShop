@@ -1,0 +1,19 @@
+{
+  "name": "echoshop",
+  "version": "1.0.0",
+  "description": "An OCR-based grocery navigation system for people with disabilities.",
+  "main": "ai.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "say": "^0.16.0",
+    "tesseract.js": "^6.0.1"
+  }
+}
