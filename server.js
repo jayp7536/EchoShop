@@ -32,34 +32,39 @@
 // app.listen(3000, () => console.log('Server running on http://localhost:3000'));
 
 // server.js
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
+import "dotenv/config";
+import express from "express";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
 
-// Import ocr.js from /public
-const { runOCR } = require(path.join(__dirname, 'public/ocr.js'));
+import { runOCR } from "./public/ocr.js";
+import { getMainCategory } from "./public/ai.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3000;
 
-// Serve everything in /public as static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Configure file uploads
 const upload = multer({ dest: 'uploads/' });
 
-// Handle POST /upload
 app.post('/upload', upload.single('image'), async (req, res) => {
   try {
+    console.log("Starting OCR...");
     const text = await runOCR(req.file.path);
-    res.json({ text });
+    console.log("OCR complete.");
+
+    const category = await getMainCategory(text);
+    res.json({ text, category });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'OCR failed' });
+    res.status(500).json({ error: 'OCR or AI failed' });
   }
 });
 
-// Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}/title_screen.html`);
 });
