@@ -50,32 +50,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>AI Image Analyzer</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 2em;
-    }
-    pre {
-      background: #f0f0f0;
-      padding: 1em;
-      border-radius: 6px;
-      text-align: left;
-      width: 80%;
-      margin: 1em auto;
-      overflow-x: auto;
-    }
+    body { font-family: Arial; text-align: center; margin: 2em; }
+    pre { background: #f7f7f7; padding: 1em; border-radius: 5px; width: 80%; margin: 1em auto; text-align: left; }
   </style>
 </head>
 <body>
-  <h1>Image → AI → Voice</h1>
+  <h1>Image → OCR → Text</h1>
 
   <input type="file" id="imageInput" accept="image/*">
   <button id="processBtn">Process Image</button>
 
-  <h3>Extracted Text (OCR):</h3>
+  <h3>Extracted Text:</h3>
   <pre id="ocrOutput"></pre>
 
   <script>
@@ -89,12 +77,12 @@
       const formData = new FormData();
       formData.append("image", file);
 
-      output.textContent = "Processing image...";
+      output.textContent = "Processing...";
 
       try {
         const response = await fetch("/upload", {
           method: "POST",
-          body: formData,
+          body: formData
         });
 
         const result = await response.json();
@@ -106,7 +94,7 @@
         }
       } catch (err) {
         console.error(err);
-        output.textContent = "Error: Unable to process image.";
+        output.textContent = "Error: Could not contact server.";
       }
     });
   </script>

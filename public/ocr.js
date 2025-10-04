@@ -1,18 +1,35 @@
+// public/ocr.js
 const Tesseract = require('tesseract.js');
+const path = require('path');
 
 async function runOCR(filePath) {
-   console.log("Starting OCR...");
+  console.log("Starting OCR (from /public)...");
 
-   const { data: { text } } = await Tesseract.recognize(filePath, 'eng');
-   console.log("OCR Result:", text);
+  const fullPath = path.resolve(filePath);
+  const { data: { text } } = await Tesseract.recognize(fullPath, 'eng');
 
-   console.log("OCR complete.");
-   return text.trim();
+  console.log("OCR Result:", text);
+  console.log("OCR complete.");
+
+  return text.trim();
 }
 
-
-
 module.exports = { runOCR };
+// const Tesseract = require('tesseract.js');
+
+// async function runOCR(filePath) {
+//    console.log("Starting OCR...");
+
+//    const { data: { text } } = await Tesseract.recognize(filePath, 'eng');
+//    console.log("OCR Result:", text);
+
+//    console.log("OCR complete.");
+//    return text.trim();
+// }
+
+
+
+// module.exports = { runOCR };
 
 /*
 // ocr.js  — browser version only
