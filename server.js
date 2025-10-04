@@ -66,5 +66,5 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}/title_screen.html`);
+  console.log(`🚀 Server running at http://localhost:${PORT}/index.html`);
 });

@@ -52,19 +52,140 @@
 <head>
   <meta charset="UTF-8">
   <title>AI Image Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
-    body { font-family: Arial; text-align: center; margin: 2em; }
-    pre { background: #f7f7f7; padding: 1em; border-radius: 5px; width: 80%; margin: 1em auto; text-align: left; }
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #111111;
+      --accent-color: #0078d7;
+      --border-color: #cccccc;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #121212;
+        --text-color: #f5f5f5;
+        --accent-color: #3399ff;
+        --border-color: #333333;
+      }
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p.description {
+      max-width: 600px;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      line-height: 1.5;
+    }
+
+    .upload-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    input[type="file"] {
+      border: 2px dashed var(--border-color);
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: transparent;
+      color: var(--text-color);
+      cursor: pointer;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    input[type="file"]:focus-visible {
+      outline: 3px solid var(--accent-color);
+    }
+
+    button {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover,
+    button:focus-visible {
+      background-color: #005fa3;
+      outline: none;
+    }
+
+    .output-section {
+      width: 90%;
+      max-width: 700px;
+      margin-top: 2rem;
+    }
+
+    .output-section h2 {
+      font-size: 1.3rem;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 0.3rem;
+    }
+
+    pre {
+      background: #f7f7f7;
+      color: #111;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      pre {
+        background: #1e1e1e;
+        color: #eaeaea;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <h1>Image → OCR → Text</h1>
+  <h1>AI Image Analyzer</h1>
+  <p class="description">
+    Upload an image to extract and read its text content using OCR (Optical Character Recognition).
+  </p>
 
-  <input type="file" id="imageInput" accept="image/*">
-  <button id="processBtn">Process Image</button>
+  <section class="upload-section" aria-labelledby="upload-heading">
+    <h2 id="upload-heading" class="sr-only">Upload Image</h2>
+    <input type="file" id="imageInput" accept="image/*" aria-label="Upload image for text extraction">
+    <button id="processBtn" aria-label="Start text extraction">Process Image</button>
+  </section>
 
-  <h3>Extracted Text:</h3>
-  <pre id="ocrOutput"></pre>
+  <section class="output-section" aria-live="polite">
+    <h2>Extracted Text</h2>
+    <pre id="ocrOutput">No text yet. Please upload and process an image.</pre>
+  </section>
 
   <script>
     const processBtn = document.getElementById("processBtn");
@@ -72,12 +193,15 @@
 
     processBtn.addEventListener("click", async () => {
       const file = document.getElementById("imageInput").files[0];
-      if (!file) return alert("Please upload an image first.");
+      if (!file) {
+        alert("Please upload an image first.");
+        return;
+      }
 
       const formData = new FormData();
       formData.append("image", file);
 
-      output.textContent = "Processing...";
+      output.textContent = "Processing image… Please wait.";
 
       try {
         const response = await fetch("/upload", {
@@ -94,7 +218,7 @@
         }
       } catch (err) {
         console.error(err);
-        output.textContent = "Error: Could not contact server.";
+        output.textContent = "Error: Could not contact the server.";
       }
     });
   </script>
