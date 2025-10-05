@@ -37,6 +37,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs/promises";
 
 import { runOCR } from "./public/ocr.js";
 import { getMainCategory } from "./public/ai.js";
@@ -58,6 +59,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     console.log("OCR complete.");
 
     const category = await getMainCategory(text);
+    await fs.unlink(req.file.path); //delete image after use
     res.json({ text, category });
   } catch (error) {
     console.error(error);

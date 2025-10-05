@@ -46,9 +46,9 @@
 </body>
 </html>
 -->
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>AI Image Analyzer</title>
@@ -171,9 +171,10 @@
 </head>
 
 <body>
-  <h1>AI Image Analyzer</h1>
+  <h1>EchoShop</h1>
   <p class="description">
-    Upload an image to extract and read its text content using OCR (Optical Character Recognition).
+    Upload an image to extract and read its text content using OCR (Optical Character Recognition),
+    then let AI determine its main category — and even read it aloud!
   </p>
 
   <section class="upload-section" aria-labelledby="upload-heading">
@@ -187,7 +188,10 @@
     <pre id="ocrOutput">No text yet. Please upload and process an image.</pre>
   </section>
 
-  <script>
+  <!-- Text-to-Speech + Upload Handler -->
+  <script type="module">
+    import { speakText } from "./tts.js";
+
     const processBtn = document.getElementById("processBtn");
     const output = document.getElementById("ocrOutput");
 
@@ -212,7 +216,12 @@
         const result = await response.json();
 
         if (result.text) {
-          output.textContent = result.text;
+          output.textContent = `🧾 Extracted Text:\n${result.text}\n\n🤖 Category: ${result.category}`;
+
+          //Speak category aloud
+          if (result.category && result.category !== "Unable to determine category.") {
+            speakText(result.category);
+          }
         } else {
           output.textContent = "Error: OCR failed.";
         }
